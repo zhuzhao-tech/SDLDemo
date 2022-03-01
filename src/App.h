@@ -6,43 +6,43 @@
 class App
 {
 private:
-    static App Instance;
+    static App instance;
 
-    bool Running = true;
+    bool running = true;
 
-    SDL_Window *Window = NULL;
-    SDL_Renderer *Renderer = NULL;
-    SDL_Surface *PrimarySurface = NULL;
+    SDL_Window *window = NULL;
+    SDL_Renderer *renderer = NULL;
+    SDL_Surface *primarySurface = NULL;
 
-    static const int WindowWidth = 1024;
-    static const int WindowHeight = 768;
+    static const int WindowWidth = 1280;
+    static const int WindowHeight = 720;
 
 private:
     App();
 
     // Capture SDL Events
-    void OnEvent(SDL_Event *Event);
+    void onEvent(SDL_Event *Event);
 
     // Initialize our SDL game / app
-    bool Init();
+    bool init();
 
     // Logic loop
-    void Loop();
+    void loop();
 
     // Render loop (draw)
-    void Render();
+    void render();
 
     // Free up resources
-    void Cleanup();
+    void cleanup();
 
 public:
-    int Execute(int argc, char *argv[]);
+    int execute(int argc, char *argv[]);
 
 public:
-    static App *GetInstance();
+    static App *getInstance();
 
-    static int GetWindowWidth();
-    static int GetWindowHeight();
+    static int getWindowWidth();
+    static int getWindowHeight();
 };
 
 #endif

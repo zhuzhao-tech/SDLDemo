@@ -2,18 +2,18 @@
 #include "App.h"
 #include "Log.h"
 
-App App::Instance;
+App App::instance;
 
 //==============================================================================
 App::App() {
 }
 
 //------------------------------------------------------------------------------
-void App::OnEvent(SDL_Event* Event) {
+void App::onEvent(SDL_Event* Event) {
 }
 
 //------------------------------------------------------------------------------
-bool App::Init() {
+bool App::init() {
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
     	Log("Unable to Init SDL: %s", SDL_GetError());
     	return false;
@@ -23,7 +23,7 @@ bool App::Init() {
         Log("Unable to Init hinting: %s", SDL_GetError());
     }
 
-    if((Window = SDL_CreateWindow(
+    if((window = SDL_CreateWindow(
     	"My SDL Game",
     	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
     	WindowWidth, WindowHeight, SDL_WINDOW_SHOWN)
@@ -32,72 +32,72 @@ bool App::Init() {
     	return false;
     }
 
-    PrimarySurface = SDL_GetWindowSurface(Window);
+    primarySurface = SDL_GetWindowSurface(window);
 
-    if((Renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED)) == NULL) {
+    if((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED)) == NULL) {
         Log("Unable to create renderer");
         return false;
     }
 
-    SDL_SetRenderDrawColor(Renderer, 0x00, 0x00, 0x00, 0xFF);
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
 
     return true;
 }
 
 //------------------------------------------------------------------------------
-void App::Loop() {
+void App::loop() {
 }
 
 //------------------------------------------------------------------------------
-void App::Render() {
-    SDL_RenderClear(Renderer);
+void App::render() {
+    SDL_RenderClear(renderer);
 
-	SDL_RenderPresent(Renderer);
+	SDL_RenderPresent(renderer);
 }
 
 //------------------------------------------------------------------------------
-void App::Cleanup() {
-	if(Renderer) {
-		SDL_DestroyRenderer(Renderer);
-		Renderer = NULL;
+void App::cleanup() {
+	if(renderer) {
+		SDL_DestroyRenderer(renderer);
+		renderer = NULL;
 	}
 
-	if(Window) {
-		SDL_DestroyWindow(Window);
-		Window = NULL;
+	if(window) {
+		SDL_DestroyWindow(window);
+		window = NULL;
 	}
 
     SDL_Quit();
 }
 
 //------------------------------------------------------------------------------
-int App::Execute(int argc, char* argv[]) {
-	if(!Init()) return 0;
+int App::execute(int argc, char* argv[]) {
+	if(!init()) return 0;
 
 	SDL_Event Event;
 
-	while(Running) {
+	while(running) {
 		while(SDL_PollEvent(&Event) != 0) {
-			OnEvent(&Event);
+			onEvent(&Event);
 
-			if(Event.type == SDL_QUIT) Running = false;
+			if(Event.type == SDL_QUIT) running = false;
 		}
 
-		Loop();
-		Render();
+		loop();
+		render();
 
 		SDL_Delay(1); // Breath
 	}
 
-	Cleanup();
+	cleanup();
 
 	return 1;
 }
 
 //==============================================================================
-App* App::GetInstance() { return &App::Instance; }
+App* App::getInstance() { return &App::instance; }
 
-int App::GetWindowWidth()  { return WindowWidth; }
-int App::GetWindowHeight() { return WindowHeight; }
+int App::getWindowWidth()  { return WindowWidth; }
+int App::getWindowHeight() { return WindowHeight; }
 
 //==============================================================================

@@ -2,5 +2,5 @@
 
 int main(int argc, char *argv[])
 {
-    return App::GetInstance()->Execute(argc, argv);
+    return App::getInstance()->execute(argc, argv);
 }
