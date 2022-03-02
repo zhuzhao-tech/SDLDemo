@@ -43,6 +43,11 @@ public:
 
     static int getWindowWidth();
     static int getWindowHeight();
+
+public:
+    SDL_Texture *loadTexture(char *filename);
+
+    void blit(SDL_Texture *textture, int x, int y);
 };
 
 #endif
