@@ -1,17 +1,9 @@
-#include <SDL2/SDL.h>
+#include "../utils/defs.h"
+#include "../entity/Entity.h"
+#include "../stage/Stage.h"
 
 #ifndef __APP_H__
 #define __APP_H__
-
-typedef struct
-{
-    int x;
-    int y;
-    int dx;
-    int dy;
-    int health;
-    SDL_Texture *texture;
-} Entity;
 
 class App
 {
@@ -24,17 +16,18 @@ private:
     SDL_Renderer *renderer = NULL;
     SDL_Surface *primarySurface = NULL;
 
-    static const int WindowWidth = 1280;
-    static const int WindowHeight = 720;
+    long then;
+    float remainder;
 
-    int up;
-    int down;
-    int left;
-    int right;
-    int fire;
+    Stage stage;
+
+public:
+    int keyboard[MAX_KEYBOARD_KEYS];
 
 private:
-    App();
+    App() {}
+
+    ~App();
 
     // Capture SDL Events
     void onEvent(SDL_Event *event);
@@ -51,20 +44,16 @@ private:
     // Free up resources
     void cleanup();
 
-public:
-    int execute(int argc, char *argv[]);
+    // 60fps
+    void capFrameRate(long *then, float *remainder);
 
 public:
     static App *getInstance();
 
-    static int getWindowWidth();
-    static int getWindowHeight();
+    int execute(int argc, char *argv[]);
 
 public:
-    Entity player;
-    Entity bullet;
-
-    SDL_Texture *loadTexture(char *filename);
+    SDL_Texture *loadTexture(const char *filename);
 
     void blit(SDL_Texture *textture, int x, int y);
 

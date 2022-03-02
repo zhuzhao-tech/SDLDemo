@@ -18,10 +18,17 @@ INCLUDE_DIRECTORIES(${SDL2TTF_INCLUDE_DIRS})
 FIND_PACKAGE(OpenGL REQUIRED)
 INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIRS})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src SRC_LIST)
+# include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+# aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src SRC_LIST)
 
-add_executable(demo ${SRC_LIST})
+file(
+	GLOB_RECURSE
+	source_files
+	${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
+)
+
+add_executable(demo ${source_files})
 
 target_link_libraries (
   demo
