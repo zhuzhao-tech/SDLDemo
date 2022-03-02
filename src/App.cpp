@@ -2,6 +2,7 @@
 #include "App.h"
 #include "Log.h"
 #include <SDL2/SDL_image.h>
+#include <iostream>
 
 App App::instance;
 
@@ -50,6 +51,9 @@ bool App::init()
 
     //-----
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
+    player.x = 100;
+    player.y = 100;
+    player.texture = loadTexture("/home/mk/workLiu/demo/SDLDemo/resources/drawable/player.png");
 
     return true;
 }
@@ -63,6 +67,8 @@ void App::loop()
 void App::render()
 {
     SDL_RenderClear(renderer);
+
+    blit(player.texture, player.x, player.y);
 
     SDL_RenderPresent(renderer);
 }
@@ -131,6 +137,10 @@ SDL_Texture *App::loadTexture(char *filename)
     SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
 
     texture = IMG_LoadTexture(renderer, filename);
+
+    if (!texture) {
+        Log("图片初始化失败了: %s", SDL_GetError());
+    }
 
     return texture;
 }

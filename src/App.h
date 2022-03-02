@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include "Player.h"
 
 #ifndef __APP_H__
 #define __APP_H__
@@ -45,6 +46,8 @@ public:
     static int getWindowHeight();
 
 public:
+    Player player;
+
     SDL_Texture *loadTexture(char *filename);
 
     void blit(SDL_Texture *textture, int x, int y);

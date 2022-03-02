@@ -3,9 +3,13 @@
 
 #include <SDL2/SDL.h>
 
-class Player {
+class Player
+{
 public:
-    
+    int x;
+    int y;
+
+    SDL_Texture *texture;
 };
 
 #endif
