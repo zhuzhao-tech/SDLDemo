@@ -18,11 +18,16 @@ private:
     static const int WindowWidth = 1280;
     static const int WindowHeight = 720;
 
+    int up;
+    int down;
+    int left;
+    int right;
+
 private:
     App();
 
     // Capture SDL Events
-    void onEvent(SDL_Event *Event);
+    void onEvent(SDL_Event *event);
 
     // Initialize our SDL game / app
     bool init();
@@ -51,6 +56,11 @@ public:
     SDL_Texture *loadTexture(char *filename);
 
     void blit(SDL_Texture *textture, int x, int y);
+
+public:
+    void doKeyDown(SDL_KeyboardEvent *event);
+
+    void doKeyUp(SDL_KeyboardEvent *event);
 };
 
 #endif

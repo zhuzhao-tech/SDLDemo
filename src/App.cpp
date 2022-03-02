@@ -12,8 +12,18 @@ App::App()
 }
 
 //------------------------------------------------------------------------------
-void App::onEvent(SDL_Event *Event)
+void App::onEvent(SDL_Event *event)
 {
+    switch (event->type)
+    {
+    case SDL_KEYDOWN:
+        doKeyDown(&event->key);
+        break;
+
+    case SDL_KEYUP:
+        doKeyUp(&event->key);
+        break;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -67,6 +77,18 @@ void App::loop()
 void App::render()
 {
     SDL_RenderClear(renderer);
+
+    if (getInstance()->up && player.y - 4 > 0)
+        player.y -= 4;
+
+    if (getInstance()->down && player.y + 4 < WindowHeight)
+        player.y += 4;
+
+    if (getInstance()->left && player.x - 4 > 0)
+        player.x -= 4;
+
+    if (getInstance()->right && player.x + 4 < WindowWidth)
+        player.x += 4;
 
     blit(player.texture, player.x, player.y);
 
@@ -138,7 +160,8 @@ SDL_Texture *App::loadTexture(char *filename)
 
     texture = IMG_LoadTexture(renderer, filename);
 
-    if (!texture) {
+    if (!texture)
+    {
         Log("图片初始化失败了: %s", SDL_GetError());
     }
 
@@ -154,6 +177,60 @@ void App::blit(SDL_Texture *texture, int x, int y)
     SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
 
     SDL_RenderCopy(renderer, texture, NULL, &dest);
+}
+
+//------------------------------------------------------------------------------
+
+void App::doKeyDown(SDL_KeyboardEvent *event)
+{
+    if (event->repeat == 0)
+    {
+        if (event->keysym.scancode == SDL_SCANCODE_UP)
+        {
+            getInstance()->up = 1;
+        }
+
+        if (event->keysym.scancode == SDL_SCANCODE_DOWN)
+        {
+            getInstance()->down = 1;
+        }
+
+        if (event->keysym.scancode == SDL_SCANCODE_LEFT)
+        {
+            getInstance()->left = 1;
+        }
+
+        if (event->keysym.scancode == SDL_SCANCODE_RIGHT)
+        {
+            getInstance()->right = 1;
+        }
+    }
+}
+
+void App::doKeyUp(SDL_KeyboardEvent *event)
+{
+    if (event->repeat == 0)
+    {
+        if (event->keysym.scancode == SDL_SCANCODE_UP)
+        {
+            getInstance()->up = 0;
+        }
+
+        if (event->keysym.scancode == SDL_SCANCODE_DOWN)
+        {
+            getInstance()->down = 0;
+        }
+
+        if (event->keysym.scancode == SDL_SCANCODE_LEFT)
+        {
+            getInstance()->left = 0;
+        }
+
+        if (event->keysym.scancode == SDL_SCANCODE_RIGHT)
+        {
+            getInstance()->right = 0;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
