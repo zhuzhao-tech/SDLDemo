@@ -63,7 +63,8 @@ bool App::init()
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
     player.x = 100;
     player.y = 100;
-    player.texture = loadTexture("/home/mk/workLiu/demo/SDLDemo/resources/drawable/player.png");
+    player.texture = loadTexture("../resources/drawable/player.png");
+    bullet.texture = loadTexture("../resources/drawable/bullet.png");
 
     return true;
 }
@@ -78,6 +79,7 @@ void App::render()
 {
     SDL_RenderClear(renderer);
 
+    // Player
     if (getInstance()->up && player.y - 4 > 0)
         player.y -= 4;
 
@@ -89,6 +91,25 @@ void App::render()
 
     if (getInstance()->right && player.x + 4 < WindowWidth)
         player.x += 4;
+
+    // Bullet
+    if (getInstance()->fire && bullet.health == 0)
+    {
+        bullet.x = player.x;
+        bullet.y = player.y;
+        bullet.dx = 16;
+        bullet.dy = 0;
+        bullet.health = 1;
+    }
+
+    bullet.x += bullet.dx;
+    bullet.y += bullet.dy;
+
+    if (bullet.x > WindowWidth)
+        bullet.health = 0;
+
+    if (bullet.health > 0)
+        blit(bullet.texture, bullet.x, bullet.y);
 
     blit(player.texture, player.x, player.y);
 
@@ -134,7 +155,7 @@ int App::execute(int argc, char *argv[])
         loop();
         render();
 
-        SDL_Delay(1); // Breath
+        SDL_Delay(16); // Breath
     }
 
     cleanup();
@@ -186,24 +207,19 @@ void App::doKeyDown(SDL_KeyboardEvent *event)
     if (event->repeat == 0)
     {
         if (event->keysym.scancode == SDL_SCANCODE_UP)
-        {
             getInstance()->up = 1;
-        }
 
         if (event->keysym.scancode == SDL_SCANCODE_DOWN)
-        {
             getInstance()->down = 1;
-        }
 
         if (event->keysym.scancode == SDL_SCANCODE_LEFT)
-        {
             getInstance()->left = 1;
-        }
 
         if (event->keysym.scancode == SDL_SCANCODE_RIGHT)
-        {
             getInstance()->right = 1;
-        }
+
+        if (event->keysym.scancode == SDL_SCANCODE_LCTRL)
+            getInstance()->fire = 1;
     }
 }
 
@@ -212,24 +228,19 @@ void App::doKeyUp(SDL_KeyboardEvent *event)
     if (event->repeat == 0)
     {
         if (event->keysym.scancode == SDL_SCANCODE_UP)
-        {
             getInstance()->up = 0;
-        }
 
         if (event->keysym.scancode == SDL_SCANCODE_DOWN)
-        {
             getInstance()->down = 0;
-        }
 
         if (event->keysym.scancode == SDL_SCANCODE_LEFT)
-        {
             getInstance()->left = 0;
-        }
 
         if (event->keysym.scancode == SDL_SCANCODE_RIGHT)
-        {
             getInstance()->right = 0;
-        }
+
+        if (event->keysym.scancode == SDL_SCANCODE_LCTRL)
+            getInstance()->fire = 0;
     }
 }
 

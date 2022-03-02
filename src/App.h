@@ -1,8 +1,17 @@
 #include <SDL2/SDL.h>
-#include "Player.h"
 
 #ifndef __APP_H__
 #define __APP_H__
+
+typedef struct
+{
+    int x;
+    int y;
+    int dx;
+    int dy;
+    int health;
+    SDL_Texture *texture;
+} Entity;
 
 class App
 {
@@ -22,6 +31,7 @@ private:
     int down;
     int left;
     int right;
+    int fire;
 
 private:
     App();
@@ -51,7 +61,8 @@ public:
     static int getWindowHeight();
 
 public:
-    Player player;
+    Entity player;
+    Entity bullet;
 
     SDL_Texture *loadTexture(char *filename);
 
