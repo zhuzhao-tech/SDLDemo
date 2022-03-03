@@ -1,5 +1,6 @@
 #include "Stage.h"
 #include "../app/App.h"
+#include "../utils/collision/Collision.h"
 
 void Stage::initStage(void)
 {
@@ -23,8 +24,13 @@ void Stage::initPlayer()
 
     player.x = 100;
     player.y = 100;
+    player.side = SIDE_PLAYER;
     player.texture = App::getInstance()->loadTexture(IMG_PLAYER);
     SDL_QueryTexture(player.texture, NULL, NULL, &player.w, &player.h);
+
+    // 缩小一下player的大小
+    player.w = player.w / 2;
+    player.h = player.h / 2;
 }
 
 //------------------------------------------------------------------------------
@@ -85,7 +91,12 @@ void Stage::fireBullet(void)
     bullet->dy = 0.f;
     bullet->health = 1;
     bullet->texture = bulletTexture;
+    bullet->side = SIDE_PLAYER;
     SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
+
+    // 缩小一下bullet的大小
+    bullet->w = bullet->w / 3;
+    bullet->h = bullet->h / 3;
 
     bullet->y += (player.h / 2) - (bullet->h / 2);
 
@@ -103,7 +114,9 @@ void Stage::doBullets(void)
         b->x += b->dx;
         b->y += b->dy;
 
-        if (b->x > WINDOW_WIDTH)
+        // 1. b->x > WINDOW_DIDTH: b刚好从右侧移出
+        // 2. b与Enemy发生碰撞的时候
+        if (bulletHitFighter(b) || b->x > WINDOW_WIDTH)
         {
             if (b == bulletTail)
                 bulletTail = prev;
@@ -133,7 +146,13 @@ void Stage::spawnEnemies(void)
         enemy->x = WINDOW_WIDTH;
         enemy->y = rand() % WINDOW_HEIGHT;
         enemy->texture = enemyTexture;
+        enemy->side = SIDE_ENEMY;
+        enemy->health = 1;
         SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->w, &enemy->h);
+
+        // 缩小一下enemy的大小
+        enemy->w = enemy->w / 3;
+        enemy->h = enemy->h / 3;
 
         enemy->dx = -(2 + (rand() % 4));
         enemySpawnTimer = 30 + (rand() % 60);
@@ -151,7 +170,9 @@ void Stage::doFighters(void)
         e->x += e->dx;
         e->y += e->dy;
 
-        if (e != &player && e->x < -e->w)
+        // 1. 不是当前的玩家 | NPC
+        // 2. e刚好从屏幕左侧移出 | e的生命值为0
+        if (e != &player && (e->x < -e->w || e->health == 0))
         {
             if (e == fighterTail)
                 fighterTail = prev;
@@ -179,7 +200,7 @@ void Stage::draw(void)
 
 void Stage::drawPlayer(void)
 {
-    App::getInstance()->blit(player.texture, player.x, player.y, player.w / 2, player.h / 2);
+    App::getInstance()->blit(player.texture, player.x, player.y, player.w, player.h);
 }
 
 void Stage::drawBullets(void)
@@ -187,7 +208,7 @@ void Stage::drawBullets(void)
     Entity *b;
 
     for (b = bulletHead.next; b != NULL; b = b->next)
-        App::getInstance()->blit(b->texture, b->x, b->y, b->w / 2, b->h / 2);
+        App::getInstance()->blit(b->texture, b->x, b->y, b->w, b->h);
 }
 
 void Stage::drawFighters(void)
@@ -195,7 +216,27 @@ void Stage::drawFighters(void)
     Entity *e;
 
     for (e = fighterHead.next; e != NULL; e = e->next)
-        App::getInstance()->blit(e->texture, e->x, e->y, e->w / 2, e->h / 2);
+        App::getInstance()->blit(e->texture, e->x, e->y, e->w, e->h);
+}
+
+//------------------------------------------------------------------------------
+
+int Stage::bulletHitFighter(Entity *b)
+{
+    Entity *e;
+
+    for (e = fighterHead.next; e != NULL; e = e->next)
+    {
+        if (e->side != b->side && collision(b, e))
+        {
+            b->health = 0;
+            e->health = 0;
+
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 //------------------------------------------------------------------------------

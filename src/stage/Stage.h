@@ -57,6 +57,10 @@ private:
 
     //------
 
+    int bulletHitFighter(Entity *b);
+
+    //------
+
     
 };
 
