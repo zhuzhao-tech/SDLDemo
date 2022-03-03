@@ -11,6 +11,9 @@ void Stage::initStage(void)
     initPlayer();
 
     bulletTexture = App::getInstance()->loadTexture(IMG_BULLET);
+    enemyTexture = App::getInstance()->loadTexture(IMG_ENEMY);
+
+    enemySpawnTimer = 0;
 }
 
 void Stage::initPlayer()
@@ -30,8 +33,14 @@ void Stage::logic(void)
 {
     doPlayer();
 
+    doFighters();
+
     doBullets();
+
+    spawnEnemies();
 }
+
+//------------------------------------------------------------------------------
 
 // 监听按键，同时移动Player & 发射炮弹
 void Stage::doPlayer(void)
@@ -60,6 +69,8 @@ void Stage::doPlayer(void)
     player.x += player.dx;
     player.y += player.dy;
 }
+
+//------------------------------------------------------------------------------
 
 // 发射炮弹
 void Stage::fireBullet(void)
@@ -108,12 +119,62 @@ void Stage::doBullets(void)
 
 //------------------------------------------------------------------------------
 
+// 产生敌人
+void Stage::spawnEnemies(void)
+{
+    Entity *enemy;
+
+    if (--enemySpawnTimer <= 0)
+    {
+        enemy = new Entity;
+        fighterTail->next = enemy;
+        fighterTail = enemy;
+
+        enemy->x = WINDOW_WIDTH;
+        enemy->y = rand() % WINDOW_HEIGHT;
+        enemy->texture = enemyTexture;
+        SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->w, &enemy->h);
+
+        enemy->dx = -(2 + (rand() % 4));
+        enemySpawnTimer = 30 + (rand() % 60);
+    }
+}
+
+// 敌人移动
+void Stage::doFighters(void)
+{
+    Entity *e, *prev;
+    prev = &fighterHead;
+
+    for (e = fighterHead.next; e != NULL; e = e->next)
+    {
+        e->x += e->dx;
+        e->y += e->dy;
+
+        if (e != &player && e->x < -e->w)
+        {
+            if (e == fighterTail)
+                fighterTail = prev;
+
+            prev->next = e->next;
+            delete e;
+            e = prev;
+        }
+
+        prev = e;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 // 绘制Player 和 Bullets
 void Stage::draw(void)
 {
     drawPlayer();
 
     drawBullets();
+
+    drawFighters();
 }
 
 void Stage::drawPlayer(void)
@@ -128,6 +189,16 @@ void Stage::drawBullets(void)
     for (b = bulletHead.next; b != NULL; b = b->next)
         App::getInstance()->blit(b->texture, b->x, b->y, b->w / 2, b->h / 2);
 }
+
+void Stage::drawFighters(void)
+{
+    Entity *e;
+
+    for (e = fighterHead.next; e != NULL; e = e->next)
+        App::getInstance()->blit(e->texture, e->x, e->y, e->w / 2, e->h / 2);
+}
+
+//------------------------------------------------------------------------------
 
 Stage::~Stage()
 {

@@ -16,6 +16,9 @@ public:
     Entity *bulletTail;
 
     SDL_Texture *bulletTexture;
+    SDL_Texture *enemyTexture;
+
+    int enemySpawnTimer = 0;
 
 public:
     Stage() {}
@@ -32,13 +35,29 @@ private:
 
     void doPlayer(void);
 
-    void fireBullet(void);
+    //------
+
+    void doFighters(void);
+
+    void spawnEnemies(void);
+
+    //------
 
     void doBullets(void);
+
+    void fireBullet(void);
+
+    //------
 
     void drawPlayer(void);
 
     void drawBullets(void);
+
+    void drawFighters(void);
+
+    //------
+
+    
 };
 
 #endif

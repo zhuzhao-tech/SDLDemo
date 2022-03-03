@@ -17,5 +17,6 @@
 
 #define IMG_BULLET "../resources/drawable/bullet.png" // 子弹
 #define IMG_PLAYER "../resources/drawable/player.png" // 飞机(玩家)
+#define IMG_ENEMY  "../resources/drawable/enemy.png"  // 敌人
 
 #endif
