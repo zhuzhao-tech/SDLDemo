@@ -8,7 +8,6 @@ class Stage
 {
 public:
     Entity player;
-    Entity bullet;
 
     Entity fighterHead;
     Entity *fighterTail;

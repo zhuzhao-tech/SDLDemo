@@ -24,6 +24,8 @@ void Stage::initPlayer()
     SDL_QueryTexture(player.texture, NULL, NULL, &player.w, &player.h);
 }
 
+//------------------------------------------------------------------------------
+
 void Stage::logic(void)
 {
     doPlayer();
@@ -62,18 +64,19 @@ void Stage::doPlayer(void)
 // 发射炮弹
 void Stage::fireBullet(void)
 {
-    Entity bullet;
-    bulletTail->next = &bullet;
-    bulletTail = &bullet;
+    Entity *bullet = new Entity;
+    bulletTail->next = bullet;
+    bulletTail = bullet;
 
-    bullet.x = player.x;
-    bullet.y = player.y;
-    bullet.dx = PLAYER_BULLET_SPEED;
-    bullet.health = 1;
-    bullet.texture = bulletTexture;
-    SDL_QueryTexture(bullet.texture, NULL, NULL, &bullet.w, &bullet.h);
+    bullet->x = player.x;
+    bullet->y = player.y;
+    bullet->dx = PLAYER_BULLET_SPEED;
+    bullet->dy = 0.f;
+    bullet->health = 1;
+    bullet->texture = bulletTexture;
+    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
 
-    bullet.y += (player.h / 2) - (bullet.h / 2);
+    bullet->y += (player.h / 2) - (bullet->h / 2);
 
     player.reload = 8;
 }
@@ -95,13 +98,15 @@ void Stage::doBullets(void)
                 bulletTail = prev;
 
             prev->next = b->next;
-            delete b; // TODO: 这里有可能报错
+            delete b;
             b = prev;
         }
 
         prev = b;
     }
 }
+
+//------------------------------------------------------------------------------
 
 // 绘制Player 和 Bullets
 void Stage::draw(void)
@@ -113,7 +118,7 @@ void Stage::draw(void)
 
 void Stage::drawPlayer(void)
 {
-    App::getInstance()->blit(player.texture, player.x, player.y);
+    App::getInstance()->blit(player.texture, player.x, player.y, player.w / 2, player.h / 2);
 }
 
 void Stage::drawBullets(void)
@@ -121,18 +126,9 @@ void Stage::drawBullets(void)
     Entity *b;
 
     for (b = bulletHead.next; b != NULL; b = b->next)
-        App::getInstance()->blit(b->texture, b->x, b->y);
+        App::getInstance()->blit(b->texture, b->x, b->y, b->w / 2, b->h / 2);
 }
 
 Stage::~Stage()
 {
-    Entity *b;
-    for (b = bulletHead.next; b != NULL; b = b->next)
-        delete b;
-
-    if (fighterTail)
-        delete fighterTail;
-
-    if (bulletTail)
-        delete bulletTail;
 }

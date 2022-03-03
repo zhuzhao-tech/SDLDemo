@@ -171,13 +171,14 @@ SDL_Texture *App::loadTexture(const char *filename)
     return texture;
 }
 
-void App::blit(SDL_Texture *texture, int x, int y)
+void App::blit(SDL_Texture *texture, int x, int y, int w, int h)
 {
     SDL_Rect dest;
 
     dest.x = x;
     dest.y = y;
-    SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+    dest.w = w;
+    dest.h = h;
 
     SDL_RenderCopy(renderer, texture, NULL, &dest);
 }

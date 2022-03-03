@@ -55,7 +55,7 @@ public:
 public:
     SDL_Texture *loadTexture(const char *filename);
 
-    void blit(SDL_Texture *textture, int x, int y);
+    void blit(SDL_Texture *textture, int x, int y, int w, int h);
 
 public:
     void doKeyDown(SDL_KeyboardEvent *event);
