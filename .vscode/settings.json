@@ -5,6 +5,9 @@
         "fstream": "cpp",
         "sstream": "cpp",
         "tuple": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "string.h": "c",
+        "stdlib.h": "c",
+        "glad.h": "c"
     }
 }
