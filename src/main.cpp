@@ -1,8 +1,6 @@
-#include <iostream>
+#include "app/App.h"
 
 int main(int argc, char *argv[])
 {
-    std::cout << "Fuck you" << std::endl;
-
-    return 0;
+    return App::getInstance()->execute(argc, argv);
 }

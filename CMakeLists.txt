@@ -20,11 +20,14 @@ file(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
 )
 
-add_executable(demo ${source_files})
+set(GLAD_C ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/glad.c)
+
+add_executable(demo ${source_files} ${GLAD_C})
 
 target_link_libraries (
   demo
   ${OPENGL_LIBRARIES}
+  glfw3 GL m Xrandr Xi X11 Xxf86vm pthread dl Xinerama Xcursor
 )
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
