@@ -2,6 +2,7 @@
 #define __APP_H__
 
 #include "../utils/defs.h"
+#include "../stage/Stage.h"
 
 class App
 {
@@ -10,8 +11,10 @@ private:
 
     GLFWwindow *window;
 
+    Stage stage;
+
 public:
-    App() {}
+    App();
 
     ~App();
 

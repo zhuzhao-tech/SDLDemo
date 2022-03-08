@@ -8,6 +8,7 @@
         "typeinfo": "cpp",
         "string.h": "c",
         "stdlib.h": "c",
-        "glad.h": "c"
+        "glad.h": "c",
+        "*.tcc": "cpp"
     }
 }
